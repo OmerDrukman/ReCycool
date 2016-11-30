@@ -4,10 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var mongoose = require('mongoose');
 var index = require('./routes/index');
 var users = require('./routes/users');
-
+var points = require('./routes/pointRoutes');
 var app = express();
 
 // view engine setup
@@ -22,8 +22,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+mongoose.connect('mongodb://recycoolAdmin:recycool@ds115798.mlab.com:15798/recycool-db');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('All passengers onboard. Ready to take of (amlak;connected successfully)');
+});
+
 app.use('/', index);
 app.use('/users', users);
+app.use('/points', points);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
