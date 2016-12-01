@@ -68,7 +68,7 @@ body {
     overflow:hidden;
 }
 */
-@media only screen and (max-width: 750px) {
+@media only screen and (max-width: 770px) {
     #map{
         margin-top: 500px;
     }
