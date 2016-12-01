@@ -23,6 +23,15 @@ router.get('/:id', function(req, res, next) {
         res.json(points);
     });
 });
+
+router.post('/type', function(req, res, next) {
+    console.log(req.body);
+    points.find({recycleOptions : {$in: req.body.recycleOptions}}, function (err, points) {
+        if (err) return console.error(err);
+        res.setHeader('Content-Type', 'application/json');
+        res.json(points);
+    });
+});
 /*
  * POST
  */
