@@ -13,6 +13,7 @@
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
     <link href="css/styles.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 </head>
@@ -146,6 +147,10 @@
         var map;
         var lastDirection;
 
+        document.getElementById('toggler').addEventListener('click', function () {
+            initMap();
+        });
+
         function initMap() {
 
             map = new google.maps.Map(document.getElementById('map'), {
@@ -166,7 +171,7 @@
             var directionsService = new google.maps.DirectionsService;
             directionsDisplay.setMap(map);
             document.getElementById('mode').addEventListener('change', function () {
-                calculateAndDisplayRoute(directionsService, directionsDisplay);
+                findBestRoad();
             });
             var geocoder = new google.maps.Geocoder();
             google.maps.event.addListener(map, 'click', function (event) {
@@ -262,7 +267,20 @@
 
         function placeMarker(map, location, directionsService, directionsDisplay, gecoder) {
             if ($("#searchable").hasClass('oneSpot')) {
-                markersAmir.pop().setMap(null);
+                var mrarkerChaker = markersAmir.pop();
+                if (mrarkerChaker != null) {
+                    mrarkerChaker.setMap(null);
+                }
+
+                var mrarkerChaker = markers.pop();
+                if (mrarkerChaker != null) {
+                    mrarkerChaker.setMap(null);
+                }
+
+                var mrarkerChaker = markers.pop();
+                if (mrarkerChaker != null) {
+                    mrarkerChaker.setMap(null);
+                }
 
                 directionsDisplay.setMap(null);
                 var marker = new google.maps.Marker({
@@ -326,8 +344,9 @@
                     for (var i = 0; i < myRoute.legs.length; i++) {
                         time += myRoute.legs[i].duration.text;
                     }
+                    sweetAlert("Master!", "time of route: " + time, "success");
 
-                    alert(time);
+                    // alert(time);
                 } else {
                     //                    window.alert('Directions request failed due to ' + status);
                 }
@@ -370,6 +389,12 @@
         function findBestRoad() {
             var from = $("#fromSearch").val();
             var end = $("#endSearch").val()
+            if (end == null) {
+                end = from;
+                var marker = markersAmir.pop();
+                markers.push(marker);
+                markers.push(marker);
+            }
             var allTypes = document.getElementsByClassName("flag");
             var recycleTypes = [];
             for (var i = 0; i < allTypes.length; i++) {
@@ -416,7 +441,9 @@
                     }, function (response, status) {
                         if (status == 'OK') {
                             directionsDisplay.setDirections(response);
-                            lastDirection.setMap(null);
+                            if (lastDirection != null) {
+                                lastDirection.setMap(null);
+                            }
                             directionsDisplay.setMap(map);
                             lastDirection = directionsDisplay;
                             var time = 0;
@@ -424,10 +451,11 @@
                             for (var i = 0; i < myRoute.legs.length; i++) {
                                 time += myRoute.legs[i].duration.text;
                             }
-
-                            alert(time);
-                        } else {
-                            window.alert('Directions request failed due to ' + status);
+                            sweetAlert("Master!", "time of route: " + time, "success");
+                            // alert(time);
+                        } else { //
+                            sweetAlert("Oops...", 'Directions request failed due to ' + status, "error");
+                            // window.alert('Directions request failed due to ' + status);
                         }
                     });
                 }
@@ -457,11 +485,12 @@
                             icon: image
                         });
                         marker.setMap(map);
-                        markersAmir.push(marker);
+                        // markersAmir.push(marker);
                         var input = document.getElementById('fromSearch');
                         input.value = results[0].formatted_address;
                     } else {
-                        window.alert('No results found');
+                        sweetAlert("Oops...", "Something went wrong!", "error");
+                        //window.alert('No results found');
                     }
                 } else {
                     //                    window.alert('Geocoder failed due to: ' + status);
@@ -478,7 +507,8 @@
                         var input = document.getElementById('fromSearch');
                         input.value = results[0].formatted_address;
                     } else {
-                        window.alert('No results found');
+                        //                        window.alert('No results found');
+                        sweetAlert("Oops...", "Something went wrong!", "error");
                     }
                 } else {
                     //                    window.alert('Geocoder failed due to: ' + status);
@@ -495,7 +525,8 @@
                         var input = document.getElementById('endSearch');
                         input.value = results[0].formatted_address;
                     } else {
-                        window.alert('No results found');
+                        //window.alert('No results found');
+                        sweetAlert("Oops...", "Something went wrong!", "error");
                     }
                 } else {
                     //                    window.alert('Geocoder failed due to: ' + status);
@@ -509,10 +540,15 @@
                     lat: stations[indexStations].latitue,
                     lng: stations[indexStations].longitude
                 };
+                var image = {
+                    url: '../images/greenMarker.png',
+                    size: new google.maps.Size(70, 70),
+                };
                 resultMap.setCenter(position);
                 var marker = new google.maps.Marker({
                     map: resultMap,
                     position: position,
+                    icon: image
                 });
                 markersAllStations.push(marker);
             }
@@ -524,6 +560,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular.min.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/searchController.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 
 </body>
 
