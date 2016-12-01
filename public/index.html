@@ -152,7 +152,8 @@
         });
 
         function initMap() {
-            $("fromSearch").val('');
+            $("#fromSearch").val('');
+            $("#endSearch").val('');
             map = new google.maps.Map(document.getElementById('map'), {
                 center: {
                     lat: 32,
@@ -305,11 +306,11 @@
                 markers.push(marker);
 
                 marker.setMap(map);
-                
-                if(markers.length==1){
+
+                if (markers.length == 1) {
                     geocodeLatLngToAdressSecondSearch(gecoder, map, location);
-                }else {
-                geocodeLatLngToAdress(gecoder, map, location);
+                } else {
+                    geocodeLatLngToAdress(gecoder, map, location);
                 }
             }
 
